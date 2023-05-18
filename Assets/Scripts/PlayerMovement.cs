@@ -11,9 +11,10 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private float _gravityValue = -9.81f;
 
     private CharacterController _controller;
-    private Camera _camera;
     private Vector3 _velocity;
     private bool _jumpPressed;
+    
+    public Camera PlayerCamera;
 
     private void Awake()
     {
@@ -31,9 +32,9 @@ public class PlayerMovement : NetworkBehaviour
         if (HasStateAuthority == false)
             return;
         
-        _camera = Camera.main;
-        Debug.Assert(_camera != null, nameof(_camera) + " != null");
-        _camera.GetComponent<FirstPersonCamera>().Target = GetComponent<NetworkTransform>().InterpolationTarget;
+        PlayerCamera = Camera.main;
+        Debug.Assert(PlayerCamera != null, nameof(PlayerCamera) + " != null");
+        PlayerCamera.GetComponent<FirstPersonCamera>().Target = GetComponent<NetworkTransform>().InterpolationTarget;
     }
 
     public override void FixedUpdateNetwork()
@@ -44,7 +45,7 @@ public class PlayerMovement : NetworkBehaviour
         if (_controller.isGrounded) 
             _velocity = new Vector3(0, -1, 0);
 
-        Quaternion cameraRotationY = Quaternion.Euler(0, _camera.transform.rotation.eulerAngles.y, 0);
+        Quaternion cameraRotationY = Quaternion.Euler(0, PlayerCamera.transform.rotation.eulerAngles.y, 0);
         Vector3 move = cameraRotationY * new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * Runner.DeltaTime * _playerSpeed;
         
         _velocity.y += _gravityValue * Runner.DeltaTime;
