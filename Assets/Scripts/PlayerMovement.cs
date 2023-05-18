@@ -28,6 +28,9 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void Spawned()
     {
+        if (HasStateAuthority == false)
+            return;
+        
         _camera = Camera.main;
         Debug.Assert(_camera != null, nameof(_camera) + " != null");
         _camera.GetComponent<FirstPersonCamera>().Target = GetComponent<NetworkTransform>().InterpolationTarget;
